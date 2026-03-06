@@ -1,3 +1,5 @@
 EMP-3003,Srujan,srujan0803@gmail.com,9480618530,sbj
 EMP-1004,Srujan,srujan0803@gmail.com,9480618530,Srujanbj,Srujan@98
 EMP-1001,Srujan,srujan0803@gmail.com,9480618530,Srujanbj
+EMP-1001,Srujan,srujan0803@gmail.com,9480628739,Srujanbj
+EMP-1009,Srujan,srujan0803@gmail.com,9876545678,Sruj
