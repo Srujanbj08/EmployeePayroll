@@ -33,7 +33,14 @@ class Employee {
     public void persist() throws IOException {
 
         FileWriter fw = new FileWriter("employee_data.txt", true);
-        fw.write(empId + "," + name + "," + email + "," + phone + "," + account.getUsername() + "\n");
+
+        fw.write(empId + "," 
+                + name + "," 
+                + email + "," 
+                + phone + "," 
+                + account.getUsername() + "," 
+                + account.getPassword() + "\n");
+
         fw.close();
     }
 }
