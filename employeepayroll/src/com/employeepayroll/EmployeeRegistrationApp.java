@@ -29,24 +29,25 @@ public class EmployeeRegistrationApp {
 
                     System.out.print("Enter Employee ID (EMP-XXXX): ");
                     String empId = sc.nextLine();
-                    Validator.validateEmpId(empId);
+                    ValidationService.validateEmployeeId(empId);
 
                     System.out.print("Enter Name: ");
                     String name = sc.nextLine();
 
                     System.out.print("Enter Email: ");
                     String email = sc.nextLine();
-                    Validator.validateEmail(email);
+                    ValidationService.validateEmail(email);
 
                     System.out.print("Enter Phone: ");
                     String phone = sc.nextLine();
-                    Validator.validatePhone(phone);
+                    ValidationService.validatePhone(phone);
 
                     System.out.print("Create Username: ");
                     String username = sc.nextLine();
 
                     System.out.print("Create Password: ");
                     String password = sc.nextLine();
+                    ValidationService.validatePassword(password);
 
                     UserAccount account = new UserAccount(username, password);
 
@@ -56,8 +57,12 @@ public class EmployeeRegistrationApp {
                     System.out.println("\nEmployee Registered Successfully:");
                     System.out.println(emp);
 
-                } catch (Exception e) {
-                    System.out.println("Registration failed.");
+                }
+                catch (ValidationException e) {
+                    System.out.println("\nValidation Failed: " + e.getMessage());
+                }
+                catch (IOException e) {
+                    System.out.println("\nError saving employee data!");
                 }
             }
 
@@ -129,7 +134,8 @@ public class EmployeeRegistrationApp {
                             System.out.println("Saved TXT: " + txtFile);
                             System.out.println("Saved PDF: " + pdfFile);
 
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             System.out.println("Download failed.");
                         }
                     }
@@ -160,7 +166,8 @@ public class EmployeeRegistrationApp {
 
                         if (dashboard != null) {
                             dashboard.display(new ArrayList<>(payslips), emp);
-                        } else {
+                        }
+                        else {
                             System.out.println("Invalid role.");
                         }
                     }
