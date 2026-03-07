@@ -118,6 +118,48 @@ public class EmployeeRegistrationApp {
                         Payslip payslip = service.generatePayslip(emp, month, basic, hra, da, allowances);
 
                         System.out.println(payslip);
+
+                       
+
+                        System.out.println("\n=== USE CASE 4: PAYSLIP PRINT / DOWNLOAD ===");
+
+                        try {
+
+                            Payslip clonedPayslip = (Payslip) payslip.clone();
+
+                            if (payslip.equals(clonedPayslip)) {
+
+                                System.out.println("Verified: Download copy matches original.");
+
+                                System.out.println("Original hashcode : " + payslip.hashCode());
+                                System.out.println("Cloned hashcode   : " + clonedPayslip.hashCode());
+                            }
+
+                            DownloadToken token = new DownloadToken();
+
+                            if (token.isExpired()) {
+
+                                System.out.println("Download token expired.");
+                                continue;
+                            }
+
+                            FileService fileService = new FileService();
+
+                            String txtFile = fileService.savePayslipAsText(clonedPayslip);
+                            String pdfFile = fileService.savePayslipAsPdf(clonedPayslip);
+
+                            System.out.println("\nPayslip Download Successful.");
+                            System.out.println("Saved as TEXT file: " + txtFile);
+                            System.out.println("Saved as PDF file : " + pdfFile);
+
+                            System.out.println("\n--- Printed Payslip ---");
+                            System.out.println(clonedPayslip);
+
+                        }
+                        catch (Exception e) {
+
+                            System.out.println("Error during payslip download.");
+                        }
                     }
                 }
             }
