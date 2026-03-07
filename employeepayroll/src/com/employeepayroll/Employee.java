@@ -20,7 +20,7 @@ public class Employee {
         this.account = account;
     }
 
-    // Constructor for payslip/dashboard use
+    // Constructor for payslip/dashboard
     public Employee(String empId, String name) {
         this.empId = empId;
         this.name = name;
@@ -43,10 +43,7 @@ public class Employee {
     }
 
     public String getUsername() {
-        if (account != null) {
-            return account.getUsername();
-        }
-        return null;
+        return (account != null) ? account.getUsername() : null;
     }
 
     @Override

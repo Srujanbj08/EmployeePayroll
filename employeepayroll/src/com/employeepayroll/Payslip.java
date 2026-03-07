@@ -1,6 +1,5 @@
 package com.employeepayroll;
 
-
 public final class Payslip implements Cloneable {
 
     private final Employee employee;
@@ -29,13 +28,18 @@ public final class Payslip implements Cloneable {
         return components.netPay;
     }
 
-    // Clone method for safe download copy
+    // Simple summary (useful for dashboards)
+    public String getSummary() {
+        return month + " : " + components.netPay;
+    }
+
+    // Clone method for UC4 download copy
     @Override
     public Object clone() {
         return new Payslip(employee, components, month);
     }
 
-    // Logical equality
+    // Logical equality check
     @Override
     public boolean equals(Object obj) {
 
@@ -54,7 +58,6 @@ public final class Payslip implements Cloneable {
     public int hashCode() {
 
         int result = 17;
-
         result = 31 * result + employee.getEmpId().hashCode();
         result = 31 * result + month.hashCode();
 

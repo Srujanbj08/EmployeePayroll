@@ -51,18 +51,13 @@ public class EmployeeRegistrationApp {
                     UserAccount account = new UserAccount(username, password);
 
                     Employee emp = new Employee(empId, name, email, phone, account);
-
                     emp.persist();
 
                     System.out.println("\nEmployee Registered Successfully:");
                     System.out.println(emp);
 
-                } 
-                catch (ValidationException e) {
-                    System.out.println("\nValidation Failed: " + e.getMessage());
-                } 
-                catch (IOException e) {
-                    System.out.println("\nError saving employee data!");
+                } catch (Exception e) {
+                    System.out.println("Registration failed.");
                 }
             }
 
@@ -71,7 +66,6 @@ public class EmployeeRegistrationApp {
                 System.out.println("\nUSE CASE 2: EMPLOYEE AUTHENTICATION & LOGIN");
 
                 AuthenticationService auth = new AuthenticationService();
-
                 Session session = auth.login(sc);
 
                 if (session != null && !session.isExpired()) {
@@ -79,7 +73,8 @@ public class EmployeeRegistrationApp {
                     System.out.println("\nLogin Successful!");
 
                     System.out.println("\n1. Generate Payslip");
-                    System.out.println("2. Logout");
+                    System.out.println("2. View Dashboard");
+                    System.out.println("3. Logout");
 
                     System.out.print("Enter option: ");
                     int option = sc.nextInt();
@@ -112,53 +107,61 @@ public class EmployeeRegistrationApp {
                         sc.nextLine();
 
                         Employee emp = new Employee(empId, name);
-
                         PayrollService service = new PayrollService();
 
                         Payslip payslip = service.generatePayslip(emp, month, basic, hra, da, allowances);
 
                         System.out.println(payslip);
 
-                       
+                        PayslipRepository.payslips.add(payslip);
 
-                        System.out.println("\n=== USE CASE 4: PAYSLIP PRINT / DOWNLOAD ===");
+                        System.out.println("\nUSE CASE 4: PAYSLIP PRINT / DOWNLOAD");
 
                         try {
 
                             Payslip clonedPayslip = (Payslip) payslip.clone();
 
-                            if (payslip.equals(clonedPayslip)) {
+                            FileService fs = new FileService();
 
-                                System.out.println("Verified: Download copy matches original.");
+                            String txtFile = fs.savePayslipAsText(clonedPayslip);
+                            String pdfFile = fs.savePayslipAsPdf(clonedPayslip);
 
-                                System.out.println("Original hashcode : " + payslip.hashCode());
-                                System.out.println("Cloned hashcode   : " + clonedPayslip.hashCode());
-                            }
+                            System.out.println("Saved TXT: " + txtFile);
+                            System.out.println("Saved PDF: " + pdfFile);
 
-                            DownloadToken token = new DownloadToken();
-
-                            if (token.isExpired()) {
-
-                                System.out.println("Download token expired.");
-                                continue;
-                            }
-
-                            FileService fileService = new FileService();
-
-                            String txtFile = fileService.savePayslipAsText(clonedPayslip);
-                            String pdfFile = fileService.savePayslipAsPdf(clonedPayslip);
-
-                            System.out.println("\nPayslip Download Successful.");
-                            System.out.println("Saved as TEXT file: " + txtFile);
-                            System.out.println("Saved as PDF file : " + pdfFile);
-
-                            System.out.println("\n--- Printed Payslip ---");
-                            System.out.println(clonedPayslip);
-
+                        } catch (Exception e) {
+                            System.out.println("Download failed.");
                         }
-                        catch (Exception e) {
+                    }
 
-                            System.out.println("Error during payslip download.");
+                    else if (option == 2) {
+
+                        System.out.println("\nUSE CASE 5: DASHBOARD DISPLAY");
+
+                        System.out.print("Enter Employee ID: ");
+                        String empId = sc.nextLine();
+
+                        System.out.print("Enter Employee Name: ");
+                        String name = sc.nextLine();
+
+                        System.out.print("Enter Role (EMPLOYEE/MANAGER): ");
+                        String role = sc.nextLine();
+
+                        Employee emp = new Employee(empId, name);
+
+                        List<Payslip> payslips = PayslipRepository.payslips;
+
+                        if (payslips.isEmpty()) {
+                            System.out.println("No payslips generated yet.");
+                            continue;
+                        }
+
+                        Dashboard dashboard = DashboardFactory.getDashboard(role);
+
+                        if (dashboard != null) {
+                            dashboard.display(new ArrayList<>(payslips), emp);
+                        } else {
+                            System.out.println("Invalid role.");
                         }
                     }
                 }
